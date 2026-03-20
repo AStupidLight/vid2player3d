@@ -20,7 +20,7 @@ env:
   terminationBodyHeight: -0.5
   terminationHeadHeight: 1.0
   enableEarlyTermination: True
-  motion_file: data/motion_lib/amass
+  motion_file: data/motion_lib/ssm_subset
   residual_force_scale: 31.85
   context_length: 32
   context_padding: 8

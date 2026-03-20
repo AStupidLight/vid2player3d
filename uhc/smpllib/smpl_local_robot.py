@@ -63,6 +63,20 @@ def polar_to_vec(p):
     return v
 
 
+
+
+def _build_smpl_parser_with_fallback(parser_cls, data_dir, gender, **kwargs):
+    try:
+        return parser_cls(model_path=data_dir, gender=gender, **kwargs)
+    except Exception:
+        if gender != "neutral":
+            raise
+        print(
+            "SMPL neutral model is unavailable under "
+            f"{data_dir}. Falling back to the male parser for neutral bodies."
+        )
+        return parser_cls(model_path=data_dir, gender="male", **kwargs)
+
 def in_hull(hull, queries):
     tolerance = 1e-3
     if len(queries.shape) == 1:
@@ -1106,13 +1120,16 @@ class Robot:
         )
 
         if self.smpl_model == "smpl":
-            self.smpl_parser_n = SMPL_Parser(model_path=data_dir, gender="neutral", create_transl=False)
+            self.smpl_parser_n = _build_smpl_parser_with_fallback(
+                SMPL_Parser, data_dir, "neutral", create_transl=False
+            )
             self.smpl_parser_m = SMPL_Parser(model_path=data_dir, gender="male", create_transl=False)
             self.smpl_parser_f = SMPL_Parser(model_path=data_dir, gender="female", create_transl=False)
         elif self.smpl_model == "smplh":
-            self.smpl_parser_n = SMPLH_Parser(
-                model_path=data_dir,
-                gender="neutral",
+            self.smpl_parser_n = _build_smpl_parser_with_fallback(
+                SMPLH_Parser,
+                data_dir,
+                "neutral",
                 use_pca=False,
                 create_transl=False,
             )
@@ -1123,9 +1140,10 @@ class Robot:
                 model_path=data_dir, gender="female", use_pca=False, create_transl=False
             )
         elif self.smpl_model == "smplx":
-            self.smpl_parser_n = SMPLX_Parser(
-                model_path=data_dir,
-                gender="neutral",
+            self.smpl_parser_n = _build_smpl_parser_with_fallback(
+                SMPLX_Parser,
+                data_dir,
+                "neutral",
                 use_pca=False,
                 create_transl=False,
             )

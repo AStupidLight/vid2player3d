@@ -6,7 +6,8 @@ import argparse
 
 sys.path.append(os.getcwd())
 
-import torch
+from isaacgym import gymapi  # noqa: F401
+
 from scipy.spatial.transform import Rotation as sRot
 import yaml
 from tqdm import tqdm
@@ -14,6 +15,7 @@ from tqdm import tqdm
 from uhc.smpllib.smpl_parser import SMPL_BONE_ORDER_NAMES as joint_names
 from uhc.smpllib.smpl_local_robot import Robot as LocalRobot
 from embodied_pose.utils.motion_lib import MotionLib
+import torch
 from poselib.skeleton.skeleton3d import SkeletonTree, SkeletonMotion, SkeletonState
 
 parser = argparse.ArgumentParser()
@@ -106,7 +108,7 @@ for i, motion_lib_seqs in enumerate(tqdm(motion_lib_seq_arr)):
         trans = smpl_data_entry['trans'].copy()
         beta = smpl_data_entry['beta'][:10].copy()
         gender = smpl_data_entry['gender']
-        fps = 30.0
+        fps = float(smpl_data_entry.get('fps', 30.0))
 
         if isinstance(gender, np.ndarray):
             gender = gender.item()

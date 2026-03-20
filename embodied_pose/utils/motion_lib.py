@@ -9,8 +9,8 @@ import numpy as np
 import os
 import yaml
 import joblib
-import torch
 from utils import torch_utils
+import torch
 
 from poselib.skeleton.skeleton3d import SkeletonMotion
 from poselib.core.rotation3d import *
